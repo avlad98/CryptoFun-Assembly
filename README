@@ -1,0 +1,100 @@
+VLAD ANDREI-ALEXANDRU
+321CB
+
+		=============================	TEMA 2	=============================
+							 -----	CryptoFun	---
+
+TASK 1:
+	In main gasesc finalul string-ului ca sa pot sa retin intr-un registru
+	pointerul catre cheie
+	Apelez functia pentru xor_strings cu parametrii string-ul si cheia (pointeri).
+
+	In functie fac xor pe fiecare dintre octetii de pe acelasi index (din cheie si
+	din string). Dupa ce aflu rezultatul il scriu in string-ul original.
+	La finalul functiei curat tot ce am folosit (registrii), iar rezultatul ramane
+	in aceeasi pozitie in memorie, ecx-ul stiind sa puncteze catre string-ul modificat.
+
+
+TASK 2:
+	In main decat trimit pe stiva pointerul catre string-ul encodat.
+	In functie imi iau pointer-ul intr-un registru si fac xor intre 2 octeti succesivi
+	pentru a obtine acel "m_i" reprezentand litera convertita.
+	Primul octet ramane neschimbat si continui cu urmatorii octeti.
+	Pentru a putea face acest lucru trebuie sa salvez "c_i"-ul anterior pentru ca
+	rezultatul va suprascrie zona de memorie din string-ul original cu litera convertita.
+	Cand am ajuns la final mai fac ultima conversie pentru ca nu s-a terminat complet.
+	Dupa ce am suprascris rezultatul in string se considera ca s-a incheiat task-ul.
+	Restaurez stiva si ies din functie. In main, ecx-ul o sa puncteze catre string-ul
+	modificat.
+
+TASK 3:
+	In main obtin pointerul catre cheie si trimit pe stiva parametrii (la fel ca la 
+	task-ul 1) si apelez functia xor_hex_strings.
+	In functie imi salvez pe stiva registrii sa nu stric ceva prin continuarea
+	programului dupa functia mea. Apoi mut in 2 registrii pointerii catre string, 
+	respectiv cheie. In bh imi iau octetul 1 si in bl pe al doilea. Apelez o functie
+	de convertire din ascii in hex (facuta de mine) ex: "d" -> 0xd, "e" -> 0xe.
+	Dupa convertire concatenez cei doi octeti astfel incat sa obtin 0xde.
+	Pentru concatenarea asta am lasat pe 0xd in bh pe aceeasi pozitie, iar pe
+	0xe in aduc aproape de bh (0x00 0x00 0x00 0xd | 0x00 0x00 0x00 0xe ---->
+	---> 0x00 0x00 0x00 0xd | 0xe 0x00 0x00 0x00) si dupa asta trebuie sa aduc tot 
+	rezultatul in bl, deci fac shiftarea cu 4 octeti, iar rezultatul o sa il scriu in
+	string-ul initial. Pentru ca iau cate 2 octeti si ii concatenez ca sa ii introduc
+	intr-un octet, string-ul convertit va avea dimensiune injumatatita.
+	Dupa ce fac aceste convertiri pe fiecare octet din string, respectiv cheie, 
+	apelez procedura facuta la task-ul 1, xor_strings. Dupa apel imi va ramane in 
+	zona de memorie de la ecx string-ul convertit, dar de dimensiune injumatatita.
+	(La finalul procedurii xor_hex_strings imi restaurez vechii registrii sa nu 
+	alterez continuarea programului).
+
+TASK 4:
+	In main decat trimit pe stiva pointerul catre string si apelez functia base32_decode.
+	In procedura imi salvez registrii si imi setez niste indexi pentru string.
+	Prima data imi iau un caracter, fac conversia literei la base32.
+	Imi iau cel de-al doilea caracter si fac si pentru el conversia,
+	apoi aduc cei 5 biti semnificativi langa ceilalti 5 din primul si
+	fac shiftarile necesare pentru a avea in octetul din AH un octet complet.
+	(5 biti din prima litera si inca 3 din a 2 a). Pentru restul octetilor
+	pana la final fac aceste conversii manual pana termin cei 8 octeti
+	de convertit si shiftat. Rezultatele se vor suprascrie in string-ul
+	initial.
+
+TASK 5:
+	In main trimit pe stiva string-ul ca parametru si apelez procedura
+	bruteforce_single_byte.
+	In procedura aleg registrul eax pentru a contine cheia.
+	Pentru fiecare cheie de la 0-255 verific fiecare index din string
+	pana cand intalnesc litera f dupa ce fac xor intre octetul curent
+	din string si cheia curenta.
+	Atunci cand intalnesc litera f in string pe o anumita pozitie
+	verific si urmatoarele litere pana la hint-ul "force" complet.
+	Daca o singura litera nu se potriveste pe parcursul acestor verificari inseamna
+	ca ori nu este buna cheia, ori nu sunt intr-o pozitie buna in
+	string-ul meu. Asa ca epuizez toti indecsii din string. Cand am ajuns
+	pe o pozitie din string astfel incat a trecut prin tot filtrul
+	"f-o-r-c-e" inseamna ca am gasit cheia.
+	Deoarece aceste rezultate sunt stocate intr-un registru temporar si
+	nu suprascriu nimic in string-ul original trebuie sa aplic cheia
+	gasita pe string-ul original.
+	Si asta fac dupa acele verificari.
+	La finalul procedurii restaurez registrii folositi, iar in eax (mai
+	exat in AL) se gaseste cheia buna.
+
+
+TASK 6:
+	In main gasesc adresa cheii si trimit pe stiva ca parametrii adresa
+	string-ului si adresa cheii. Apoi apelez procedura decode_vigenere.
+	In procedura salvez registrii pe stiva, imi iau de pe stiva 
+	string-ul criptat si cheia vigenere.
+	Aflu distanta dintre caracterul curent din cheie si litera "a".
+	Aplic aceasta distanta pe caracterul din string si daca rezultatul
+	iese din domeniul alfabetului literelor mici, il adun astfel incat
+	sa ajunga litera mica. Conversia asta o fac doar daca in caracterul
+	curent din string am litera mica. Daca e alt caracter cum ar fi 
+	"space" sau alte semne sar la urmatorul index.
+	Cand ajung pe ultimul octet din cheie ii resetez index-ul si reiau
+	cheia pentru continuarea string-ului. Rezultatul va suprascrie string-ul
+	original.
+
+PUNCTAJ:
+	Pe masina locala obtin 80/80 puncte.
